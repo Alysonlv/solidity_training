@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const { interface, bytecode } = require('./compile');
 
 const provider = new HDWalletProvider(
-  'napkin cry else wear suggest clog discover custom warfare erase hollow number',
+  'receive below anger claw arena pony attitude tumble what spider captain palace',
   'https://rinkeby.infura.io/IYs36csKGdfTDjh1sPC4 '
 );
 const web3 = new Web3(provider);
@@ -19,6 +19,9 @@ const deploy = async () => {
     .deploy({ data: bytecode, arguments: [INITIAL_MESSAGE] })
     .send({ gas: '1000000', from: accounts[0] });
 
+  console.log('---------------------------------------------------------');
+  console.log(interface);
+  console.log('---------------------------------------------------------');
   console.log('Contract deployed to:', deployedContract.options.address);
 };
 deploy();
