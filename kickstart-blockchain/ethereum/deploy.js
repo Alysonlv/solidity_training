@@ -4,7 +4,7 @@ const compiledCampaignFactory = require('./build/CampaignFactoryContract.json');
 
 const provider = new HDWalletProvider(
   'receive below anger claw arena pony attitude tumble what spider captain palace',
-  'https://rinkeby.infura.io/IYs36csKGdfTDjh1sPC4 '
+  'https://rinkeby.infura.io/IYs36csKGdfTDjh1sPC4'
 );
 const web3 = new Web3(provider);
 
