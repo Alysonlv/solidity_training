@@ -1,21 +1,29 @@
 import React, {Component} from 'react';
 import {Card, Button} from 'semantic-ui-react';
-import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
+import { Link } from '../routes';
+
+import {CampaignDetails} from '../ethereum/CampaignDetails';
 
 class CampaignIndex extends Component {
     static async getInitialProps() {
-        const campaigns = await factory.methods.getDeployedCampaigns().call();
+        //var campaignAddresses = await factory.methods.getDeployedCampaigns().call();
+        var p = CampaignDetails.getSummary();
+
+        const campaigns = await p.then(function(result) {
+            return result;
+        });
+
         return {campaigns};
     }
 
     renderCampaigns() {
         const items = this.props.campaigns.map(
-            address => {
+            (item) => {
                 return {
-                    header: address,
-                    description: <a>View Campaing</a>,
-                    meta: '',
+                    header: item.projectName,
+                    description: <Link route={`/campaigns/${item.address}`}><a>View Campaing</a></Link>,
+                    meta: item.address,
                     fluid: true
                 }
             }
@@ -29,7 +37,9 @@ class CampaignIndex extends Component {
             <Layout>
                 <div>
                     <h3>Open Campaings</h3>
-                    <Button floated="right" content="Create Campaing" icon="add circle" primary />
+                    <Link route="/campaigns/new">
+                        <a><Button floated="right" content="Create Campaing" icon="add circle" primary /></a>
+                    </Link>
                     {this.renderCampaigns()}
                 </div>
             </Layout>

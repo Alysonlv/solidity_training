@@ -17,20 +17,20 @@ const deploy = async () => {
 
   const deployedContract = await new web3.eth.Contract(JSON.parse(compiledCampaignFactory.interface))
     .deploy({ data: compiledCampaignFactory.bytecode })
-    .send({ gas: '1000000', from: accounts[0] });
+    .send({ gas: '2000000', from: accounts[0] });
 
   console.log('Contract deployed to:', deployedContract.options.address);
 
-  const deploymentInfo = `
-    Contract deployed from account: ${accounts[0]}
-    To: ${result.options.address}
-    Dete: ${new Date()}
-  `;
+  // const deploymentInfo = `
+  //   Contract deployed from account: ${accounts[0]}
+  //   To: ${result.options.address}
+  //   Dete: ${new Date()}
+  // `;
   
-  fs.writeFile('contractDeploymentInfo.txt', deploymentInfo, (err) => {
-    if (err) throw err;
-    console.log('Contract deployment info file has been saved.')
-  });
+  // fs.writeFile('contractDeploymentInfo.txt', deploymentInfo, (err) => {
+  //   if (err) throw err;
+  //   console.log('Contract deployment info file has been saved.')
+  // });
 
 };
 deploy();

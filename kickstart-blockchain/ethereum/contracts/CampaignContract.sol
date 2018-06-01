@@ -84,5 +84,22 @@ contract CampaignContract {
         expense.recipient.transfer(expense.value);
         expense.complete = true;
     }
+
+    function getCampaignDetail() public view returns(
+        uint, uint, uint, uint, address, string
+        ) {
+        return (
+            minimumContribution,
+            this.balance,
+            expensesRequests.length,
+            approversCount,
+            manager,
+            projectName
+        );
+    }
+
+    function getRequestsCount() public view returns (uint) {
+        return expensesRequests.length;
+    }
     
 }
