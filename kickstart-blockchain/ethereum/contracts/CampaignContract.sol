@@ -48,8 +48,10 @@ contract CampaignContract {
         require(msg.value > minimumContribution);
         
         totalRaised = totalRaised + msg.value;
-        approvers[msg.sender] = true;
-        approversCount++;
+        if (!approvers[msg.sender]) {
+            approvers[msg.sender] = true;
+            approversCount++;
+        }
     }
     
     function createExpenseRequest(string description, uint value, address recipient) public restricted {

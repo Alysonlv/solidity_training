@@ -3,12 +3,12 @@ import {Card, Button} from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
 
-import {CampaignDetails} from '../ethereum/CampaignDetails';
+import {CampaignService} from '../ethereum/CampaignService';
 
 class CampaignIndex extends Component {
     static async getInitialProps() {
         //var campaignAddresses = await factory.methods.getDeployedCampaigns().call();
-        var p = CampaignDetails.getSummary();
+        var p = CampaignService.getSummary();
 
         const campaigns = await p.then(function(result) {
             return result;

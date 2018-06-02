@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Grid, Button } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
-import {CampaignDetails} from '../../ethereum/CampaignDetails';
+import {CampaignService} from '../../ethereum/CampaignService';
 import web3 from '../../ethereum/web3';
+import ContributeForm from '../../components/ContributeForm';
+import { Link } from '../../routes';
 
 class CampaignShow extends Component {
     static async getInitialProps(props) {
         var address = props.query.address;
-        const campaign = await CampaignDetails.getCampaignDetails(address);
+        const campaign = await CampaignService.getCampaignDetails(address);
         
-        return {campaign};
+        return {
+            campaign: campaign,
+            address: props.query.address
+        };
     }
 
     renderCards() {
@@ -53,7 +58,26 @@ class CampaignShow extends Component {
         return (
             <Layout>
                 <h3 align="center">{this.props.campaign.projectName} Campaign!</h3>
-                {this.renderCards()}
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={10}>
+                            {this.renderCards()}
+                        </Grid.Column>
+                        <Grid.Column width={6}>
+                            <ContributeForm address={this.props.address}/>
+                        </Grid.Column>
+                    </Grid.Row>
+
+                    <Grid.Row>
+                        <Grid.Column width={10}>
+                            <Link route={`/campaigns/${this.props.address}/expenses`}>
+                                <a><Button primary>View Expenses Request</Button></a>
+                            </Link>
+                        </Grid.Column>
+                        <Grid.Column width={6}>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </Layout>
         );
     }

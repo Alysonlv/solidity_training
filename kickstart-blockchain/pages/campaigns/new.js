@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Layout from '../../components/Layout';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
-import factory from '../../ethereum/factory';
+import {CampaignFactoryService} from '../../ethereum/CampaignFactoryService';
 import web3 from '../../ethereum/web3';
 import { Router } from '../../routes';
 
@@ -21,11 +21,7 @@ class CampaignNew extends Component {
 
         try {
             const accounts = await web3.eth.getAccounts();
-            await factory.methods
-                    .createCampaign(this.state.minimumContribution, this.state.projectName)
-                    .send({
-                        from: accounts[0]
-                    });
+            await CampaignFactoryService.createCampaign(this.state.minimumContribution, this.state.projectName, accounts[0]);
 
             Router.pushRoute('/');
         } catch (err) {
@@ -59,7 +55,7 @@ class CampaignNew extends Component {
                     </Form.Field>
 
                     <Message error header="Oops! Something went wrong. :(" content={this.state.errorMessage} />
-                    <Message success header="Awesome! :)" content={this.state.errorMessage} />
+                    <Message success header="Awesome! :)" content={this.state.successMessage} />
                     <Button primary loading={this.state.loading}>Create</Button>
                 </Form>
             </Layout>

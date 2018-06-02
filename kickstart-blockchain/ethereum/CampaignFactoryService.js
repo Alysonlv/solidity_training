@@ -6,14 +6,21 @@ import CampaignFactoryContract from './build/CampaignFactoryContract.json';
 
 const instance = new web3.eth.Contract(
     JSON.parse(CampaignFactoryContract.interface),
-    '0x329A1c71Ba4c53dcfb18F40b327ba0026EF66F93'
+    '0x7D1aA071DB5D48D683b1404f7c44044FeE9a237B'
 );
 
-export class CampaignFactory {
+export class CampaignFactoryService {
 
     static async getDeployedCampaigns() {
-        console.log(instance);
         return await instance.methods.getDeployedCampaigns().call();;
+    }
+
+    static async createCampaign(minimumContribution, projectName, account) {
+        await instance.methods
+                    .createCampaign(minimumContribution, projectName)
+                    .send({
+                        from: account
+                    });
     }
 
 }

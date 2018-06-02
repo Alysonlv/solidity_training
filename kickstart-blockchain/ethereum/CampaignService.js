@@ -1,6 +1,6 @@
 import web3 from './web3';
 import CampaignContract from './build/CampaignContract.json';
-import {CampaignFactory} from './CampaignFactory';
+import {CampaignFactoryService} from './CampaignFactoryService';
 
 function getInstance(address) {
     let instance =  new web3.eth.Contract(
@@ -11,8 +11,7 @@ function getInstance(address) {
     return instance;
 }
 
-
-export class CampaignDetails {
+export class CampaignService {
    
     static async getCampaignDetails(address) {
         let instance =  getInstance(address);
@@ -34,8 +33,7 @@ export class CampaignDetails {
     }
 
     static async getSummary() {
-        var addresses = await CampaignFactory.getDeployedCampaigns();
-        console.log('addresses = ' + addresses);
+        var addresses = await CampaignFactoryService.getDeployedCampaigns();
         var arr = new Array();
         
         for (var i = 0; i < addresses.length; i++) {
@@ -56,6 +54,40 @@ export class CampaignDetails {
         }
         
         return arr;
+    }
+
+    static async contribute(address, account, etherValue) {
+        var instance =  getInstance(address);
+        await instance.methods.contribute().send({
+            from: account,
+            value: web3.utils.toWei(etherValue, 'ether')
+        });
+    }
+
+    static async getExpensesRequest(contractAddress) {
+        var instance =  getInstance(contractAddress);
+
+        var expensesCount = await instance.methods.getRequestsCount().call();
+
+        const expensesRequest = await Promise.all(
+            Array(parseInt(expensesCount)).fill().map((element, index) => {
+                return instance.methods.expensesRequests(index).call();
+            })
+        );
+        
+        return {expensesCount, expenses};
+    }
+
+    static async addExpenseRequest(contractAddress, account, description, value, recipient) {
+        var instance =  getInstance(contractAddress);
+        
+        await instance.methods.createExpenseRequest(
+            description, 
+            web3.utils.toWei(value, 'ether'), 
+            recipient
+        ).send({
+            from: account
+        });
     }
     
 }
