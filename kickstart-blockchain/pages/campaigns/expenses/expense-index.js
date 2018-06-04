@@ -4,22 +4,37 @@ import { Button, Table } from 'semantic-ui-react';
 import {Utils} from '../../../ethereum/utils';
 import { Link } from '../../../routes';
 import {CampaignService} from '../../../ethereum/CampaignService';
+import ExpenseRow from '../../../components/ExpenseRow';
 
 class ExpenseIndex extends Component {
     static async getInitialProps(props) {
         const { address } = props.query;
 
-        const expenses = await CampaignService.getExpensesRequest(address);
-        console.log('________________________');
-        console.log(expenses);
-        console.log('________________________');
-        return { address, expenses };
+        const requests = await CampaignService.getExpensesRequest(address);
+        const expenses = requests.expenses;
+        const expensesCount = requests.expensesCount;
+
+        const approversCount = await CampaignService.getApprovers(address);
+        return { address, expenses, expensesCount, approversCount };
     }
+
+    renderRow() {
+        return this.props.expenses.map((expense, index) => {
+            return <ExpenseRow key={index} id={index} expense={expense} address={this.props.address} approversCount={this.props.approversCount} />
+        });
+    }
+
     render() {
         const { Header, Row, HeaderCell, Body } = Table;
         return (
             <Layout>
                 <h3>Expenses</h3>
+
+                <Link route={`/campaigns/${this.props.address}/expenses/new`}>
+                    <a>
+                        <Button primary floated="right" style={{ marginBottom: 10 }}>Add Expense</Button>
+                    </a>
+                </Link>
 
                 <Table>
                     <Header>
@@ -33,11 +48,13 @@ class ExpenseIndex extends Component {
                             <HeaderCell>Finalize</HeaderCell>
                         </Row>
                     </Header>
+
+                    <Body>
+                        {this.renderRow()}
+                    </Body>
                 </Table>
 
-                <Link route={`/campaigns/${this.props.address}/expenses/new`}>
-                    <a><Button primary>Add Expense</Button></a>
-                </Link>
+                <div>Found {this.props.approversCount} expense(s)</div>
             </Layout>
         );
     }

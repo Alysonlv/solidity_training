@@ -1,6 +1,7 @@
 import web3 from './web3';
 import CampaignContract from './build/CampaignContract.json';
 import {CampaignFactoryService} from './CampaignFactoryService';
+import { Utils } from './utils';
 
 function getInstance(address) {
     let instance =  new web3.eth.Contract(
@@ -69,7 +70,7 @@ export class CampaignService {
 
         var expensesCount = await instance.methods.getRequestsCount().call();
 
-        const expensesRequest = await Promise.all(
+        const expenses = await Promise.all(
             Array(parseInt(expensesCount)).fill().map((element, index) => {
                 return instance.methods.expensesRequests(index).call();
             })
@@ -87,6 +88,30 @@ export class CampaignService {
             recipient
         ).send({
             from: account
+        });
+    }
+
+    static async getApprovers(contractAddress) {
+        var instance =  getInstance(contractAddress);
+
+        return await instance.methods.approversCount().call();
+    }
+
+    static async approveExpense(contractAddress, recipientAddress) {
+        var instance =  getInstance(contractAddress);
+        var accounts = await Utils.getAccounts();
+        
+        return await instance.methods.approveExpense(recipientAddress).send({
+            from: accounts[0]
+        });
+    }
+
+    static async finalizeExpense(contractAddress, recipientAddress) {
+        var instance =  getInstance(contractAddress);
+        var accounts = await Utils.getAccounts();
+        
+        return await instance.methods.finalizeExpense(recipientAddress).send({
+            from: accounts[0]
         });
     }
     
